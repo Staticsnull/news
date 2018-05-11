@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery.min.js"></script>
+    <script type="application/javascript">
+        /*$(document).read(function () {
+            
+        })*/
+       /* $(function () {
+            $.ajax({
+                type:"get",
+                url:"/listUI",
+                success:function(data){
+                    for(var i in data){
+                        $('#userId').text(data[i].id);
+                        $('#username').html(data[i].username);
+                        $('#password').html(data[i].password);
+                    }
+                }
+            });
+        });*/
+
+       function deleteNews(id) {
+           //var obj = $(id);
+           var result = window.confirm("确认要删除该新闻及其所有的评论吗")
+           if(result){
+               $.ajax({
+                   type:"get",
+                   url:"/deleteNews?id="+id,
+                   dataType:"json",
+                   success:function (result) {
+                       if(result.OK){
+                           alert("删除成功");
+                           window.location.href = "/news";
+                       }
+
+                   },
+                   error : function() {
+                       alert("异常！");
+                   }
+
+
+               });
+
+
+           }
+           return false;
+       }
+
+    </script>
+</head>
+<body>
+
+
+ <div>
+    <div><p>新闻列表</p></div>
+
+    <table>
+
+        <tr>
+
+            <td>新闻编号</td>
+            <td>新闻标题</td>
+            <td>新闻摘要</td>
+            <td>作者</td>
+            <td>创建时间</td>
+            <td>操作</td>
+
+        </tr>
+        <th:block th:each="news,st:${list}">
+        <!--使用th:style标签实现隔行变色-->
+        <tr  th:style="'background:' +@{(${st.index%2==0}  ? 'gray;':'')}+''">
+
+            <td th:text="${news.id}"></td>
+            <td th:text="${news.title}"></td>
+            <td th:text="${news.summary}"></td>
+            <td th:text="${news.author}"></td>
+            <td th:text="${#calendars.format(news.createDate,'yyyy-MM-dd hh:mm')}"></td>
+           <td>
+               <a href="#"
+                   th:href="@{'/toComment?id='+${news.id}}">
+                评论</a>
+                <!--<a href="#" th:value="${news.id}"
+                   onclick="deleteNews(this)">删除</a>-->
+			   <a href="#"
+				th:onclick="'deleteNews(\''+${news.id}+'\')'">
+                   删除</a>
+           </td>
+        </tr>
+        </th:block>
+
+
+
+    </table>
+
+
+
+    </div>
+</body>
+</html>

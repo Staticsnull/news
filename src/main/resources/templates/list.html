@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+
+        table tr td {
+            border: 1px solid #e7e7e7;
+            height: 25px;
+        }
+
+        table tr:nth-child(2n) {
+            background-color: #cccccc;
+        }
+    </style>
+    <script type="application/javascript" src="/jquery.min.js"></script>
+    <script type="application/javascript">
+        $(document).ready(function () {
+            getNewsList();
+        });
+        function getNewsList() {
+            $.ajax({
+                type:"get",
+                url:"/getNews",
+                success:function(result) {
+                    setTableRows(result);
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+        }
+        function setTableRows(result) {
+            //获取tbody对象
+            var tBody = $("#tbodyId");
+            //清空tbody内容
+            tBody.empty();
+            for (var i in result) {
+                //创建tr对象
+                var tr = $("<tr></tr>");
+                tr.append("<td>" + result[i].id + "</td>");
+                tr.append("<td>" + result[i].title + "</td>");
+                tr.append("<td>" + result[i].summary + "</td>");
+                tr.append("<td>" + result[i].author + "</td>");
+               // var date = new Date(result[i].createDate);
+                tr.append("<td>" + result[i].createDate + "</td>");
+                tr.append("<td><a href=toComment?id="
+                    + result[i].id + ">评论</a><a onclick='deleteNews("
+                    + result[i].id + ")' href='#'>删除</a></td>")
+
+                tBody.append(tr);
+            }
+        }
+
+       function deleteNews(id) {
+           //var obj = $(id);
+           var result = window.confirm("确认要删除该新闻及其所有的评论吗")
+           if(result){
+               $.ajax({
+                   type:"get",
+                   url:"/deleteNews?id="+id,
+                   dataType:"json",
+                   success:function (result) {
+                       if(result.OK){
+                           alert("删除成功");
+                           getNewsList();
+                           //window.location.href = "/news";
+                       }
+
+                   },
+                   error : function() {
+                       alert("异常！");
+                   }
+               });
+           }
+           return false;
+       }
+
+    </script>
+</head>
+<body>
+
+
+ <div>
+    <div><h1 tyle="text-align: center;">新闻列表</h1></div>
+     <div >
+         <table border="1" cellspacing="0" style="text-align: center;width:100%">
+             <thead>
+             <tr>
+                 <th>新闻编号</th>
+                 <th>新闻标题</th>
+                 <th>新闻摘要</th>
+                 <th>作者</th>
+                 <th>创建时间</th>
+                 <th>操作</th>
+             </tr>
+             </thead>
+             <tbody id="tbodyId">
+
+             </tbody>
+         </table> 
+     </div> 
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>评论</title>
+
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="title">
+
+        <h3 style="text-align: center">增加评论</h3>
+
+    </div>
+
+    <form action="addComment" method="post">
+        <input type="hidden" name="newsId" th:value="${newsId}">
+        <p><label for="content">评论内容</label>
+
+            <textarea id="content" name="content" cols="30" rows="20"></textarea>
+
+        </p>
+        <p>
+
+            <label for="author">评论人</label>
+            <input type="text" id="author" name="author">
+
+
+        </p>
+        <p><input type="submit" value="提交"> &nbsp; <input type="button" value="返回" onclick="javascript:history.go(-1)">
+        </p>
+
+
+    </form>
+
+
+</div>
+
+
+</body>
+</html>
